@@ -1,0 +1,25 @@
+- Article: Learning Bayesian network Classifiers from Label Proportions
+- Autors: Jeronimo Hernandez-Gonzalez, Iñaki Inza, Jose Antonio Lozano
+- Year: 2012
+
+
+- Instructions:
+1) Dataset in format '.arff'. See example. 
+
+2) File '.frmt' with the information of variables to be discretized ( [discr] ) 
+and variables to be deleted ( [delet] ). See example.
+
+* Note that both files should have the same name: (dataset.arff and 
+dataset.frmt).
+
+3) Run program:
+   > java -jar PMEM.jar [options] -in dataset -c 30
+
+* For more information, execute: java -jar PMEM.jar (without options)
+
+4) See the results in output.txt or the file you choose.
+
+
+- Example:
+java -jar PMEM.jar -mt MCEM -md TAN -mi 15 -path ./EXAMPLE/ -out outputfile.txt -in breast-cancer -c 10
+
