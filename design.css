@@ -209,6 +209,10 @@ p {
    list-style: disc outside none;
 }
 
+#description li {
+   margin-top:10px;
+}
+
 
 /*********************************************************************************/
 /* Publications                                                                  */
