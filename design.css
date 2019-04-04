@@ -174,12 +174,12 @@ p {
 
 #back {
    float: right;
-   width: 150px;
+   width: 120px;
    background: #FFF;
 }
 
 #back img {
-   width: 150px;
+   width: 120px;
 }
 
 /*********************************************************************************/
@@ -202,6 +202,11 @@ p {
 #description p {
    text-align: justify;
 }
+
+#description lu {
+   text-align: justify;
+}
+
 
 /*********************************************************************************/
 /* Publications                                                                  */
