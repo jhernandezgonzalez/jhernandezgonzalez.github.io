@@ -205,7 +205,7 @@ p {
 
 #description ul {
    text-align: justify;
-   padding: 40px 5pt;
+   padding-left:40px;
    list-style: disc outside none;
 }
 
