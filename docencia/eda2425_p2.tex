@@ -1,0 +1,878 @@
+\documentclass[10pt,a4paper]{../documents/class_material_assignatura_udg}
+
+\usepackage{wrapfig}
+\usepackage{xspace}
+\newcommand{\Cpp}{{C\texttt{++}}\xspace}
+
+\usepackage{listings}
+\usepackage[shortlabels]{enumitem}
+\usepackage{tikzsymbols} % pel \Ninja
+
+\lstdefinestyle{codicpp}{
+  language=C++,
+  basicstyle=\ttfamily\scriptsize,%\color{black!75}\ttfamily\scriptsize,
+  %showstringspaces=false,
+  backgroundcolor=\color{gris!50},
+  keywordstyle=\color{blaufosc}\ttfamily,
+  stringstyle=\color{salmo}\ttfamily,
+  commentstyle=\color{grocintens!85!black}\ttfamily,
+  morekeywords={cout,cin,string },
+  morecomment=[l][\color{verd}]{\#},
+  upquote=true,%per ' i \" a l'SQL
+  escapechar=¿,
+  moredelim=**[is][\btHL]{@}{@},
+  moredelim=**[is][{\btHL[fill=grocsuau]}]{`}{`},
+}
+
+
+\lstdefinestyle{codibash}{
+  language=bash,
+  basicstyle=\ttfamily,
+  showstringspaces=false,
+  backgroundcolor=\color{gris},
+  commentstyle=\color{salmo},
+  keywordstyle=\color{blaufosc},
+  otherkeywords={$},
+  escapechar=¡,
+  moredelim=**[is][\btHL]{@}{@},
+  moredelim=**[is][{\btHL[fill=grocsuau]}]{`}{`},
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% INFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\graphicspath{{../logos/}{./imatges/}}% Lloc on hi ha els logos
+%        { \huge \bfseries \sc{Pràctica 1: Estructures de Dades} \linebreak \linebreak Juguem amb Ce Essa Ves? \linebreak\linebreak 
+
+\title{Pràctica 2: Horaris d'examens}
+\shorttitle{Pràctica 2: Algorítmica}
+\author{Jerónimo Hernández}
+\email{jeronimo.hernandez@udg.edu}
+\assignatura[EDA]{Estructures de Dades i Algorítmica}
+\curs[24/25]{Curs 2024/25}
+\grau[GEINF - GDDV]{Grau en Enginyeria Informàtica i Grau en Disseny i Desenvolupament de Videojocs}
+% Comprovar els "ACTUALITZAR DATA"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+\pagestyle{fancy}
+
+
+%\documentclass[10pt,a4paper]{article}
+%\usepackage{graphicx}
+%\graphicspath{{../imatges/}{./imatges}}% Lloc on hi ha els logos
+%
+%\usepackage[catalan]{babel}
+%\usepackage[utf8]{inputenc}
+%\usepackage[margin=2.5cm]{geometry}
+%\usepackage{graphicx}
+%\usepackage[x11names,table]{xcolor}
+%\usepackage{scalerel} % per escalar gràfics a mida lletres
+%\usepackage{hyperref}
+%\usepackage{nameref}
+%\usepackage{listings} % per codi
+%\usepackage{comment} % per amagar troços
+%\usepackage{lscape} % per posar pàgines apaisades
+%\usepackage{fancyhdr}
+%\usepackage{fancyvrb}
+%\usepackage{lstautogobble} % per listings amb indentació
+%\usepackage{makecell}
+%\usepackage{multicol}
+%\usepackage{wrapfig}
+%\usepackage{ulem} % per \sout, tatxar text
+%\usepackage{fontawesome} % per fletxes... 
+%\usepackage{array} % per centrar taules verticalment
+%\usepackage{tikzsymbols} % pel \Ninja
+%\usepackage{amsmath} % per equacions
+%
+%% Colors UdG
+%\definecolor{blauFosc}{RGB}{0,20,137}% reflexBlueC
+%\definecolor{verd}{RGB}{0,115,119}% 3278C
+%\definecolor{salmo}{RGB}{229,106,84}% 7416C
+%\definecolor{daurat}{RGB}{246,190,0}% 7408C
+%\definecolor{gris}{RGB}{217,217,214}% CoolGRay1C
+%
+%% Colors terreny (Pràctica 2)
+%\definecolor{mar}{RGB}{0,150,200}
+%\definecolor{terra}{RGB}{150,100,50}
+%\definecolor{lava}{RGB}{160,0,80}
+%\definecolor{edificis}{RGB}{255,200,0}
+%
+%% Nou tipus de columna per centrar horitzonalment i vertical
+%\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+%
+%\usepackage{lipsum}
+%
+%\newcommand{\Cpp}{{C\texttt{++}}}
+%
+%\pagestyle{fancy}
+%\lstset{language=C++,basicstyle=\ttfamily\scriptsize,escapechar={¿},numbers=left,tabsize=4}
+%\lstset{upquote=true} %per ' i \" als programes
+%
+%\lhead{EDA \sc{Pràctica 2: Algorísmica}, curs 2023/24 GDDV/GEINF}
+%\rhead{\thepage}
+%\cfoot{}
+%\begin{document}
+%    \begin{titlepage}
+%        \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+%        \begin{flushleft}
+%            \includegraphics[height=1.5cm]{EPS.png}\\\vfill
+%        \end{flushleft}
+%        \center % Center everything on the page
+%        %----------------------------------------------------------------------------------------
+%        %	HEADING SECTIONS
+%        %----------------------------------------------------------------------------------------
+%        \textsc{\huge \bfseries Pràctiques EDA}\\[0.25cm]
+%        \textsc{\Large \bfseries Curs 2023/24}\\[0.25cm]
+%        \textsc{\large GEINF - GDDV}
+%        %----------------------------------------------------------------------------------------
+%        %	TITLE SECTION
+%        %----------------------------------------------------------------------------------------
+%        \HRule \\[0.4cm]
+%        { \huge \bfseries \sc{Pràctica 2: Algorísmica} \linebreak \linebreak Auditant la Gencat}\\[0.4cm] % Title of your document
+%        \HRule \\\vfill
+%        \begin{minipage}{0.4\textwidth}
+%            \begin{flushleft}
+%                \includegraphics[height=1.5cm]{logo_IMAE.png}
+%            \end{flushleft}
+%        \end{minipage}
+%        \hfill
+%        \begin{minipage}{0.4\textwidth}
+%            \begin{flushright} \large
+%                {\small (PDF generat el \today)}
+%            \end{flushright}
+%        \end{minipage}
+%    \end{titlepage}
+
+
+
+\section{Presentació}
+\label{sec:presentacio}
+
+%\begin{wrapfigure}{r}{0.36\textwidth}
+%\centering
+%    \includegraphics[width=.7\linewidth]{logo.png}
+%\end{wrapfigure}
+
+L'EPS de la UdG ens ha demanat un programa per crear els horaris d'examens finals de cada semestre. S'ha de tenir en compte que:
+
+\begin{itemize}
+\item A l'EPS s'imparteixen assignatures de diferents graus.
+\item Cada semestre, hi ha examens finals de diferents assignatures sota petició del professorat responsable.
+\item Hi ha dos tipus d'assignatura segons el nombre de matriculats: assignatures de {\bf\textcolor{salmo}{g}ran} grup, i de grup {\bf\textcolor{salmo}{r}eduït}.
+\item L'EPS disposa d'un nombre limitat d'aules per als examens.
+\item Hi ha aules de l'EPS on no hi quep tot l'alumnat de les assignatures de {\bf\textcolor{salmo}{g}ran} grup.
+\item Hi haurà diferents torns d'examens, i cada torn es disposarà d'un nombre fix d'aules de {\bf\textcolor{salmo}{g}ran} capacitat, i de capacitat {\bf\textcolor{salmo}{r}eduïda}.
+\item L'EPS fixarà, si s'escau, el nombre màxim de dies d'examen.
+\item L'EPS prohibeix dos examens del mateix curs i grau en el mateix torn. També es reserva el dret de demanar que els examens de dues assignatures no coincideixin (p.ex., tenen el mateix professor).\\[-2pt]
+
+\item Tot i la possible restricció d'un màxim de dies, es vol fer servir el menor nombre de dies possible.
+\item Tot i la condició de prohibir examens del mateix curs i grau en el mateix torn, es vol que estiguin el màxim possible de repartits al llarg dels torns (dies).  
+\end{itemize}
+
+Ens demanen un programa que faci l'assignació d'examens (assignatures) a dies. Hem comunicat a l'EPS que, donat la complexitat del problema, la solució òptima pot tenir un alt cost computacional. L'EPS ens demana la \textbf{possibilitat de triar} cercar la solució ràpida, vàlida, o l'òptima.
+
+\section{Feina a fer}
+
+\begin{enumerate}
+    \item Fent servir una estratègia voraç, \textbf{trobar ràpidament} una assignació d'assignatures a torns que no superi el nombre màxim donat (si s'indica) i que compleixi les restriccions establertes. Si no es troba, s'informarà que no ha pogut trobar una solució.
+
+    \item Fent servir \textit{backtracking}, \textbf{trobar una} assignació d'assignatures a torns que no superi el nombre màxim donat (si s'indica) i que compleixi les restriccions establertes. Si no és possible trobar una assignació amb aquestes condicions, s'informarà que no hi ha solució.
+    
+    \item Fent servir \textit{backtracking}, \textbf{trobar la millor} assignació d'assignatures a torns, és a dir, la que complint totes restriccions donades, \textit{minimitza} el nombre de torns, primer, i maximitza la desviació estàndard mitjana dels torns als que s'han assignat examens dels mateix curs-grau. Igualment, si no és possible trobar una assignació amb aquestes condicions, s'informarà que no hi ha solució.
+\end{enumerate}
+
+\subsection{Característiques del programa}\label{sec:caracteristiques}
+
+Així, heu de fer un programa que:
+
+\begin{enumerate}
+\item Rebi \textbf{per paràmetre} des de la terminal els valors que configuren el problema:
+\begin{itemize}
+\item[\texttt{-cr <int>}]: nombre d'aules de capacitat {\bf\textcolor{salmo}{r}eduïda}. Valor per defecte, 1.
+\item[\texttt{-gc <int>}]: nombre d'aules de {\bf\textcolor{salmo}{g}ran} capacitat. Valor per defecte, 1.
+\item[\texttt{-d <int>}]: nombre de dies màxim en que poden haver examens. Valor per defecte, \textbf{indeterminat}.
+\item[\texttt{-s <int>}]: semestre amb el que es vol treballar. Valor per defecte, 1.
+\item[\texttt{fitxer\_dades}]: el nom (i ruta) del fitxer de dades que es vol fer servir
+\end{itemize}
+
+\hspace{-15pt}1-bis. Rebi \textbf{també per paràmetre} des de la terminal quin algoritme vol executar l'usuari:
+\item[``'']: per defecte (no caldrà passar cap opció), s'executarà l'algoritme de \textit{backtracking} que torna \textbf{una solució vàlida} (la primera).
+\item[\texttt{-m}]: s'executarà l'algoritme de \textit{backtracking} que torna la \textbf{millor solució}.
+\item[\texttt{-v}]: s'executarà l'algoritme que \textbf{cerca ràpidament} una solució de manera voraç.
+\item Llegeixi les \textbf{assignatures} del fitxer de tipus text indicat. Aquest fitxer també podrà contenir \textbf{restriccions} entre parells d'assignatures. Vegeu-ne un exemple a la Secció~\ref{sec:entrada}.
+
+%Només \textbf{conservarem les dades del semestre amb el que volem treballar}. 
+Podeu fer els preprocessaments de les dades que necessiteu.
+
+\item Executi l'algoritme indicat per l'usuari.
+\item Mostri per pantalla la \textbf{distribució d'assignatures} (examens) en franjes horàries proposta. 
+També mostrareu el \textbf{temps de còmput} necessari per trobar la solució, el nombre total de torns i de dies, i la \textbf{desviació estàndar mitjana}.
+
+Vegeu-ne varis exemples a la Secció~\ref{sec:sortida}.
+\end{enumerate}
+
+\subsection{Plantejament del problema}
+
+\begin{itemize}
+\item Hi ha disponibles un nombre determinat d'aules de {\bf\textcolor{salmo}{g}ran} capacitat, i de capacitat {\bf\textcolor{salmo}{r}eduïda}, indicats per paràmetre.
+
+%Una assignatura de grup {\bf\textcolor{salmo}{g}ran} només pot anar a una aula de {\bf\textcolor{salmo}{g}ran} capacitat. 
+\item \textbf{Cada dia} hi poden haver \textbf{dos torns} (matí i tarda) d'examens.
+\item S'han de repartir \textbf{totes les assignatures} del semestre indicat per paràmetre.
+\item Cada torn pot incloure \textbf{tants examens com aules} disponibles respectant la restricció de capacitat de les aules:
+
+Una assignatura de grup {\bf\textcolor{salmo}{r}eduït} podria ocupar un aula de {\bf\textcolor{salmo}{g}ran} capacitat, però una assignatura de {\bf\textcolor{salmo}{g}ran} grup mai pot anar a un aula de capacitat {\bf\textcolor{salmo}{r}eduïda}.
+\item S'han de complir les \textbf{restriccions entre assignatures}:
+    \begin{itemize}
+        \item Dos assignatures del mateix grau i curs no es poden assignar al mateix torn.
+        \item Restricció específica entre qualsevol parell d'assignatures que s'indiqui al fitxer de dades.
+    \end{itemize}
+
+\item Es poden fer servir, en principi, tants torns com calgui, però...
+    \begin{itemize}
+        \item es pot indicar el nombre de dies màxim del període d'examens, 
+        
+        \item o es pot demanar buscar la solució que faci servir el \textbf{mínim nombre de torns possible}.
+    \end{itemize}
+
+\item En triar entre dos solucions amb el mateix nombre de torns, es prefereix aquella que reparteixi millor les assignatures del mateix curs i grau al llarg dels \textbf{torns}.
+
+En el següent esquema, la solució \texttt{b} és millor que l'\texttt{a}.
+
+\texttt{\ \ \ \ T-1 T-1 T-2 T-2 T-3 T-3 T-4 T-4} \hfill\texttt{// T-i} és l'\texttt{i}-èsim torn
+
+\texttt{a. I1a I2a I1b I2b V1a V2a V1b V2b} \hfill\texttt{// I1a} és l'assignatura \texttt{a} del curs \texttt{1} del grau \texttt{I}
+
+\texttt{b. I1a I2a V1a V2a I1b I2b V1b V2b}
+
+Es farà servir la \textbf{desviació estàndard mitjana} per comparar el repartiment d'assignatures en torns. Per cada grau i curs, es calcula la desviació estàndard dels torns als que s'assignen assignatures d'aquest grau-curs. 
+
+        \begin{center}
+    \begin{equation}
+        \begin{tabular}{m{4cm}m{0cm}m{8.5cm}}
+            \[
+                \sigma = \sqrt{\frac{1}{n} \sum_{i=1}^n (t_i - \overline{t})^2}
+            \]
+            & &
+            Fórmula de la desviació estàndard $\sigma$, on $n$ és el nombre d'assignatures del grau-curs, $t_{i}$ és el torn al que s'ha assignat l'$i$-èsima assignatura, i $\overline{t}$ és el torn mitjà entre els que s'han fet servir per al grau-curs.
+        \end{tabular}
+        \label{eq:desviacio}
+    \end{equation}
+\end{center}
+
+Després es calcula la mitjana entre tots els graus i cursos. Una solució és \textbf{millor} si la desviació estándard mitjana és \textbf{més gran}.
+\end{itemize}
+
+
+        
+
+
+
+
+\subsection{Instruccions}
+
+\begin{itemize}
+    \item Cal codificar el \textit{backtracking} utilitzant les classes vistes a teoria: \texttt{Solucionador}, \texttt{Solucio} i \texttt{Candidats}.
+    
+    \item Podeu codificar l'algorisme voraç com creieu més convenient.
+    
+    \item Per llegir les dades podeu fer servir les funcions d'\texttt{eines.h}.
+    
+    \item Ens quedarem amb les assignatures del semestre indicat. Les altres es poden ignorar.
+
+    \item Si es creu oportú, es poden preprocessar les dades per reorganitzar-les o construir estructures auxiliars que puguin millorar l'eficiència dels algoritmes. 
+    
+    Tot preprocessament s'inclourà en el càlcul del \textbf{temps de còmput} de l'algorisme.
+
+    \item En una execució normal, l'únic paràmetre imprescindible és el nom del \textit{fitxer de dades}. Cal fer servir els valors per defecte indicats a la Secció~\ref{sec:caracteristiques}. 
+    
+    S'ha de donar a l'usuari una opció per consultar com executar el programa (ajuda, \texttt{-h}).
+
+    \item Mostrar per sortida estàndard el resultat en un format similar al que es mostra a la Secció~\ref{sec:sortida}.
+    
+    
+    
+    \item Per fer les proves, cal començar amb poques línies amb imports ben dimensionats (pel que fa al màxim que se li podrà assignar a un auditor), i anar-ho incrementant de mica en mica (el temps d'execució es dispararà!).
+\end{itemize}
+
+\clearpage
+
+\section{Instruccions de lliurament}
+
+Caldrà penjar a \textbf{Moodle} un fitxer comprimit \textbf{\texttt{zip}} (o bé \textbf{\texttt{tgz}}) amb un nom que segueixi el format
+
+\begin{center}
+	\texttt{CodiUsuari\_CognomsNom\_p2.zip}
+\end{center}
+
+\noindent que ha de contenir:
+
+\begin{enumerate}
+
+	\item El codi font.
+	
+	A part del correcte funcionament, es valorarà la documentació i la claredat del codi.
+
+	\item Un joc de proves (fitxers amb les dades utilitzades).
+
+	\item Un \textit{script} de \textit{bash} que permeti executar el vostre programa sobre el joc de proves (executant una prova darrere l'altra, sense preguntar res).
+
+	\item Un fitxer \texttt{llegeix.me} amb informació bàsica del programa i aclariments que puguin facilitar la correcció (p.e., si alguna cosa no funciona bé).
+	
+	\item\label{informe} Un document anomenat \texttt{informe.pdf} amb una explicació de l'estratègia que heu seguit en les vostres implementacions. També mostreu les proves més significatives que heu realitzat. Per cada prova hi constarà:
+	
+	\begin{itemize}
+	    \item Comanda per executar-la (p.e., \texttt{./p2 -m -d 3 assignatures\_poques.txt}).
+	    \item Resultat obtingut (assignació dels examens, desviació estàndard mitjana i temps).
+	    \item Anàlisi: què buscàveu amb aquesta prova, com ara ``comprovar si es tenien en compte les restriccions'', ``comprovar com es dispara el temps d'execució'', ``veure si es detectava bé que no hi havia solució'', ``comprovar el pas de paràmetres al \texttt{main}'', etc.
+	\end{itemize}
+	 L'informe tindrà una pàgina de portada amb títol, nom, etc. Es valorarà que estigui ben escrit.
+
+	\item\label{doxygen} Una carpeta \texttt{html} amb la documentació generada amb {\sf doxygen} en format HTML.
+
+    Inclourà la descripció de cada classe, la dels atributs, i les pre- i postcondicions dels mètodes. S'ha de mostrar aquesta informació tant per la \textbf{part pública} com per la \textbf{part privada} de les classes.
+    
+    \textbf{Compte:} per defecte, {\sf doxygen} només mostra la part pública a la documentació. Per aconseguir-ho, heu de marcar la casella \texttt{EXTRACT\_PRIVATE} a la pestanya \texttt{Expert} de {\bf doxywizard}.
+
+\end{enumerate}
+
+\bigskip
+
+\noindent A \textbf{\texttt{bas.udg.edu}} cal deixar, al directori \texttt{$\sim$/eda/p2}, els fitxers de codi, joc de proves, \textit{script} i \texttt{llegeix.me} (punts 1-4). No hi pengeu la documentació (punts~\ref{informe} i~\ref{doxygen}); ocupa massa i no ens cal aquí.
+
+\bigskip
+
+Recordeu que:
+
+\begin{itemize}
+    \item Tots els fitxers de tipus text han d'estar en format Unix.
+    
+    \item Durant el procés de correcció es podrà demanar una entrevista amb l'estudiant per aclarir aspectes de la pràctica.
+\end{itemize}
+
+Consulteu el document \textit{``Instruccions per al lliurament de les activitats de laboratori''} per més detalls.
+
+\bigskip
+
+\textbf{La data límit de lliurament està especificada a l'activitat corresponent de Moodle.}
+
+\clearpage
+
+
+\section{Joc de proves}
+
+Cal que acompanyeu el vostre codi amb un joc de proves. En aquest cas, el joc de proves es redueix a diferents fitxers de dades. Com sempre, us donem un joc de proves bàsic que \textbf{heu de complementar}.
+
+El joc de proves que compartim consta de 2 fitxers de dades (\textcolor{salmo}{\bf no son els mateixos que als exercicis}) i el teniu disponible a Moodle. Aquí us mostrem diferents sortides possibles davant diferents crides. Vigileu perquè segons com es tracta el problema pels vostres algoritmes voraç i de {\it backtracking}, la sortida que obteniu pot ser diferent a la que us donem. En el cas de l'algoritme voraç i el de \textit{backtracking} d'una solució qualsevol, la sortida pot ser molt diferent. En el cas de l'algoritme de \textit{backtracking} que retorna la millor solució, aquesta també pot ser diferent a la que us donem però ha de ser equivalent d'acord amb el criteri d'optimització (mateix nombre de torns, mateixa desviació estàndard mitjana). 
+
+A continuació reproduïm el contingut de \texttt{assignatures\_poques.txt} i les sortides del programa davant de diferent crides.
+
+
+
+\subsection{Fitxer de dades: \texttt{assignatures\_poques.txt}}\label{sec:entrada}
+\begin{verbatim}
+Grau	Assignatura	Codi	Tipus	Crèdits	Semestre	Curs
+GDDV	Elements matemàtics per a videojocs	3105G13001	r	9.00	1	1
+GDDV	Arquitectures de consoles i dispositius de videojocs	3105G13009	r	7.00	2	1
+GDDV	Formació d'imatges i interacció entre objectes	3105G13010	r	6.00	2	1
+GDDV	Art i videojocs	3105G13031	r	3.00	1	1
+GDDV	Disseny conceptual dels videojocs	3105G13027	r	5.00	2	2
+GDDV	Narrativa dels videojocs	3105G13029	r	7.00	1	2
+GDDV	Disseny de motors de jocs I	3105G13022	r	5.00	1	3
+GDDV	Disseny de motors de jocs II	3105G13023	r	4.00	2	3
+GDDV	Cloud computing i sistemes distribuïts per a videojocs	3105G13026	r	5.00	2	3
+GDDV	Teoria i pràctica de la producció audiovisual	3105G13030	r	5.00	1	3
+GEINF	Àlgebra	3105G07001	g	6.00	1	1
+GEINF	Càlcul	3105G07002	g	6.00	1	1
+GEINF	Lògica i matemàtica discreta	3105G07003	g	9.00	2	1
+GEINF	Metodologia i tecnologia de la programació II	3105G07009	g	6.00	2	1
+GEINF	Estadística	3105G07007	r	6.00	1	2
+GEINF	Organització i administració d'empreses	3105G07008	g	6.00	2	2
+GEINF	Estructures de dades i algorítmica	3105G07010	g	9.00	1	2
+GEINF	Projecte de programació	3105G07011	r	5.00	2	2
+GEINF	Multimèdia i interfícies d'usuari	3105G07012	g	5.00	1	3
+GEINF	Fonaments de computació	3105G07013	r	5.00	1	3
+GEINF	Paradigmes i llenguatges de programació	3105G07014	r	5.00	2	3
+GEINF	Intel·ligència artificial	3105G07015	g	5.00	2	3
+GEB	Fonaments de física 1	3105G00001	g	6.00	1	1
+GEB	Fonaments de física 2	3105G00002	g	6.00	2	1
+GEB	Fonaments de matemàtiques 2	3105G00003	g	6.00	2	1
+GEB	Fonaments de matemàtiques 1	3105G00004	g	9.00	1	1
+GEB	Estadística	3105G00015	g	6.00	1	2
+GEB	Teoria de circuits	3105G03012	g	6.00	1	2
+GEB	Electrònica analògica	3105G03022	g	6.00	2	2
+GEB	Anatomia funcional i biomecànica	3109G01057	r	5.00	2	2
+GEB	Desenvolupament de projectes d'electrònica	3105G03032	g	4.00	2	3
+GEB	Disseny de dispositius d'assistència i teràpia	3105G15007	r	5.00	1	3
+GEB	Equips de monitorització i diagnòstic	3105G15008	r	6.00	1	3
+GEB	Gestió intel·ligent de dades i coneixement mèdic	3105G15009	r	5.00	1	3
+*
+3105G07001	3105G13001
+3105G07002	3105G13001
+3105G07001	3105G13031
+3105G07002	3105G13031
+3105G07003	3105G13009
+3105G07009	3105G13009
+\end{verbatim}
+
+
+On l'asterisc `\texttt{*}' és el símbol que es fa servir per separar el llistat d'assignatures de les restriccions entre assignatures (cada línia representa una restricció entre un parell d'assignatures --no poden ser assignades al mateix torn--).
+
+\subsection{Funcionament bàsic}
+
+\begin{lstlisting}[style=codibash]
+$ ./p2
+Falten arguments ("p2 --help" per ajuda)
+\end{lstlisting}
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 --help
+¡Ú¡s: ./p2 [-h] | [-v] [-m] [-cr <int>] [-gc <int>] [-s <int>] [-d <int>] fitxer
+
+opcio pot ser:
+  -h, --help     mostra aquest missatge d'ajuda i surt
+
+  -v             cerca r¡à¡pida amb un algoritme vora¡ç¡
+  -m             cerca la soluci¡ó¡ que minimitza el nombre de torns i 
+                   maximitza la dispersi¡ó¡
+  -cr <int>      assigna <int> com a nombre d'aules de capacitat
+                   redu¡ï¡da disponibles per als examens
+  -gc <int>      assigna <int> com a nombre d'aules de gran
+                   capacitat disponibles per als examens
+  -s <int>       indica que s'ha de fer l'assignaci¡ó¡ per al
+                   semestre <int> (1 o 2)
+  -d <int>       indica el l¡í¡mit m¡à¡xim de dies que es poden fer servir
+
+fitxer           fitxer de text amb totes les assignatures a les
+                   que es vol assignar un torn d'examen i possibles
+                   restriccions entre parells d'assignatures
+\end{lstlisting}
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -s -cr 3
+Error: El valor associat a l'opci¡ó¡ '-s' ¡é¡s incorrecte.
+\end{lstlisting}
+
+%\begin{lstlisting}[style=codibash]
+%$ ./p2 -s 2
+%Error: Falta el nom del fitxer.
+%\end{lstlisting}
+
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -s 2
+Error: Falta el nom del fitxer.
+\end{lstlisting}
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -s 2 noexisteix.txt
+Error: El fitxer [noexisteix.txt] no es pot obrir. Repassa el nom i permisos.
+\end{lstlisting}
+
+\subsection{Funcionament}\label{sec:sortida}
+
+Busquem l'assignació amb un algoritme voraç:
+\begin{lstlisting}[style=codibash]
+$ ./p2 -v -cr 3 -gc 2 assignatures_poques.txt
+18 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=5  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G13001 (tipus r),  GDDV-1 *
+* 3105G13022 (tipus r),  GDDV-3 *
+* 3105G07013 (tipus r), GEINF-3 *
+*********************************
+
+*********************************
+* Torn 2                   n=4  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G15007 (tipus r),   GEB-3 *
+* 3105G07007 (tipus r), GEINF-2 *
+*********************************
+
+*********************************
+* Torn 3                   n=4  *
+*-------------------------------*
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G13029 (tipus r),  GDDV-2 *
+* 3105G15009 (tipus r),   GEB-3 *
+*********************************
+
+*********************************
+* Torn 4                   n=5  *
+*-------------------------------*
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G15008 (tipus r),   GEB-3 *
+* 3105G13031 (tipus r),  GDDV-1 *
+* 3105G13030 (tipus r),  GDDV-3 *
+*********************************
+
+Num. torn: 4
+Num. dies:  2
+Desviaci¡ó¡: 0.924055
+Temps: 0.00129841 segons
+\end{lstlisting}
+o amb \textit{backtracking}, però la versió que es queda amb la primera solució (opció per defecte del programa):
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -cr 3 -gc 2 assignatures_poques.txt
+18 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=5  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G13001 (tipus r),  GDDV-1 *
+* 3105G15007 (tipus r),   GEB-3 *
+* 3105G13029 (tipus r),  GDDV-2 *
+*********************************
+
+*********************************
+* Torn 2                   n=5  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G15008 (tipus r),   GEB-3 *
+* 3105G13022 (tipus r),  GDDV-3 *
+* 3105G07007 (tipus r), GEINF-2 *
+*********************************
+
+*********************************
+* Torn 3                   n=5  *
+*-------------------------------*
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G15009 (tipus r),   GEB-3 *
+* 3105G07013 (tipus r), GEINF-3 *
+* 3105G13030 (tipus r),  GDDV-3 *
+*********************************
+
+*********************************
+* Torn 4                   n=3  *
+*-------------------------------*
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G13031 (tipus r),  GDDV-1 *
+*********************************
+
+Num. torns: 4
+Num. dies:  2
+Desviaci¡ó¡: 0.701833
+Temps: 0.000919688 segons
+\end{lstlisting}
+
+O busquem la millor solució amb \textit{backtracking}:
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -m -cr 3 -gc 2 assignatures_poques.txt
+18 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=5  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G13001 (tipus r),  GDDV-1 *
+* 3105G13022 (tipus r),  GDDV-3 *
+* 3105G07013 (tipus r), GEINF-3 *
+*********************************
+
+*********************************
+* Torn 2                   n=4  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G15007 (tipus r),   GEB-3 *
+* 3105G13029 (tipus r),  GDDV-2 *
+*********************************
+
+*********************************
+* Torn 3                   n=4  *
+*-------------------------------*
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G15008 (tipus r),   GEB-3 *
+* 3105G13031 (tipus r),  GDDV-1 *
+*********************************
+
+*********************************
+* Torn 4                   n=5  *
+*-------------------------------*
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G07007 (tipus r), GEINF-2 *
+* 3105G15009 (tipus r),   GEB-3 *
+* 3105G13030 (tipus r),  GDDV-3 *
+*********************************
+
+Num. torns: 4
+Num. dies:  2
+Desviaci¡ó¡: 0.979611
+Temps: @1.52839 segons@
+\end{lstlisting}
+
+Si només reduïm el nombre d'aules disponibles (\texttt{-cr 2}), el temps es comença a disparar:
+
+\begin{lstlisting}[style=codibash]
+$ ./p2 -m -cr 2 -gc 2 assignatures_poques.txt
+18 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=4  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G13001 (tipus r),  GDDV-1 *
+* 3105G13022 (tipus r),  GDDV-3 *
+*********************************
+
+*********************************
+* Torn 2                   n=4  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G15007 (tipus r),   GEB-3 *
+* 3105G07013 (tipus r), GEINF-3 *
+*********************************
+
+*********************************
+* Torn 3                   n=3  *
+*-------------------------------*
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G13029 (tipus r),  GDDV-2 *
+* 3105G15008 (tipus r),   GEB-3 *
+*********************************
+
+*********************************
+* Torn 4                   n=3  *
+*-------------------------------*
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G15009 (tipus r),   GEB-3 *
+*********************************
+
+*********************************
+* Torn 5                   n=4  *
+*-------------------------------*
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G13031 (tipus r),  GDDV-1 *
+* 3105G07007 (tipus r), GEINF-2 *
+* 3105G13030 (tipus r),  GDDV-3 *
+*********************************
+
+Num. torns: 5
+Num. dies:  3
+Desviaci¡ó¡: 1.25739
+Temps: @38.9267 segons@
+\end{lstlisting}
+
+Noteu que, degut a les restriccions, no hi ha solució possible si volem limitar-ho a 2 dies:
+\begin{lstlisting}[style=codibash]
+$ ./p2 -m -cr 2 -gc 2 -d 2 assignatures_poques.txt
+18 assignatures leides de 3 graus diferents.
+
+No hi ha soluci¡ó¡ per la configuraci¡ó¡ indicada
+Temps: 1.20769 segons
+\end{lstlisting}
+
+Amb més assignatures, la cerca d'una solució amb \textit{backtracking} dona:
+\begin{lstlisting}[style=codibash]
+$ ./p2 -cr 3 -gc 2 assignatures_obligatories.txt
+37 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=5  *
+*-------------------------------*
+* 3105G03023 (tipus g),   GEB-3 *
+* 3105G03013 (tipus g),   GEB-2 *
+* 3105G13034 (tipus r),  GDDV-3 *
+* 3105G07019 (tipus r), GEINF-3 *
+* 3105G07017 (tipus r), GEINF-2 *
+*********************************
+
+*********************************
+* Torn 2                   n=5  *
+*-------------------------------*
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G15008 (tipus r),   GEB-3 *
+* 3105G15012 (tipus r),   GEB-4 *
+* 3105G15001 (tipus r),   GEB-1 *
+*********************************
+
+*********************************
+* Torn 3                   n=5  *
+*-------------------------------*
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G07021 (tipus g), GEINF-2 *
+* 3105G15009 (tipus r),   GEB-3 *
+* 3105G15013 (tipus r),   GEB-4 *
+* 3105G13024 (tipus r),  GDDV-4 *
+*********************************
+
+*********************************
+* Torn 4                   n=5  *
+*-------------------------------*
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G07004 (tipus g), GEINF-1 *
+* 3105G13014 (tipus r),  GDDV-4 *
+* 3105G07007 (tipus r), GEINF-2 *
+* 3105G07026 (tipus r), GEINF-3 *
+*********************************
+
+*********************************
+* Torn 5                   n=5  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G15014 (tipus r),   GEB-4 *
+* 3105G07013 (tipus r), GEINF-3 *
+* 3105G13030 (tipus r),  GDDV-3 *
+*********************************
+
+*********************************
+* Torn 6                   n=5  *
+*-------------------------------*
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G07027 (tipus g), GEINF-3 *
+* 3105G13022 (tipus r),  GDDV-3 *
+* 3105G07035 (tipus r), GEINF-4 *
+* 3105G13029 (tipus r),  GDDV-2 *
+*********************************
+
+*********************************
+* Torn 7                   n=5  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G07023 (tipus g), GEINF-3 *
+* 3105G13031 (tipus r),  GDDV-1 *
+* 3105G15007 (tipus r),   GEB-3 *
+* 3105G13025 (tipus r),  GDDV-4 *
+*********************************
+
+*********************************
+* Torn 8                   n=2  *
+*-------------------------------*
+* 3105G07005 (tipus g), GEINF-1 *
+* 3105G13001 (tipus r),  GDDV-1 *
+*********************************
+
+Num. torns: 8
+Num. dies:  4
+Desviaci¡ó¡: 1.31907
+Temps: 0.00347749 segons
+\end{lstlisting}
+
+
+Amb l'algoritme voraç:
+\begin{lstlisting}[style=codibash]
+$ ./p2 -v -cr 3 -gc 2 assignatures_obligatories.txt
+37 assignatures leides de 3 graus diferents.
+
+*********************************
+* Torn 1                   n=5  *
+*-------------------------------*
+* 3105G03023 (tipus g),   GEB-3 *
+* 3105G03013 (tipus g),   GEB-2 *
+* 3105G15012 (tipus r),   GEB-4 *
+* 3105G07026 (tipus r), GEINF-3 *
+* 3105G07035 (tipus r), GEINF-4 *
+*********************************
+
+*********************************
+* Torn 2                   n=5  *
+*-------------------------------*
+* 3105G03012 (tipus g),   GEB-2 *
+* 3105G07012 (tipus g), GEINF-3 *
+* 3105G15009 (tipus r),   GEB-3 *
+* 3105G15014 (tipus r),   GEB-4 *
+* 3105G13029 (tipus r),  GDDV-2 *
+*********************************
+
+*********************************
+* Torn 3                   n=5  *
+*-------------------------------*
+* 3105G00015 (tipus g),   GEB-2 *
+* 3105G07021 (tipus g), GEINF-2 *
+* 3105G15013 (tipus r),   GEB-4 *
+* 3105G07013 (tipus r), GEINF-3 *
+* 3105G15007 (tipus r),   GEB-3 *
+*********************************
+
+*********************************
+* Torn 4                   n=4  *
+*-------------------------------*
+* 3105G00004 (tipus g),   GEB-1 *
+* 3105G07004 (tipus g), GEINF-1 *
+* 3105G13024 (tipus r),  GDDV-4 *
+* 3105G13031 (tipus r),  GDDV-1 *
+*********************************
+
+*********************************
+* Torn 5                   n=5  *
+*-------------------------------*
+* 3105G07002 (tipus g), GEINF-1 *
+* 3105G07010 (tipus g), GEINF-2 *
+* 3105G15001 (tipus r),   GEB-1 *
+* 3105G13030 (tipus r),  GDDV-3 *
+* 3105G13025 (tipus r),  GDDV-4 *
+*********************************
+
+*********************************
+* Torn 6                   n=4  *
+*-------------------------------*
+* 3105G07001 (tipus g), GEINF-1 *
+* 3105G07027 (tipus g), GEINF-3 *
+* 3105G13014 (tipus r),  GDDV-4 *
+* 3105G13022 (tipus r),  GDDV-3 *
+*********************************
+
+*********************************
+* Torn 7                   n=4  *
+*-------------------------------*
+* 3105G00001 (tipus g),   GEB-1 *
+* 3105G07023 (tipus g), GEINF-3 *
+* 3105G07007 (tipus r), GEINF-2 *
+* 3105G13001 (tipus r),  GDDV-1 *
+*********************************
+
+*********************************
+* Torn 8                   n=5  *
+*-------------------------------*
+* 3105G07005 (tipus g), GEINF-1 *
+* 3105G13034 (tipus r),  GDDV-3 *
+* 3105G07019 (tipus r), GEINF-3 *
+* 3105G15008 (tipus r),   GEB-3 *
+* 3105G07017 (tipus r), GEINF-2 *
+*********************************
+
+Num. torns: 8
+Num. dies:  4
+Desviaci¡ó¡: 1.26381
+Temps: 0.00221079 segons
+\end{lstlisting}
+
+
+I amb \textit{backtracking} de nou, però buscant l'òptim, l'arbre de possibilitats creix tant que ja és inviable.
+%\begin{lstlisting}[style=codibash]
+%$ p2 -v -cr 3 -gc 2 assignatures_obligatories.txt
+%37 assignatures leides de 3 graus diferents.
+%
+%\end{lstlisting}
+
+
+
+\end{document}
